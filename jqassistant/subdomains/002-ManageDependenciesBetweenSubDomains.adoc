@@ -1,0 +1,79 @@
+= Manage Dependencies Between Sub Domains
+
+== Status: Accepted
+
+== Context
+
+A sub domains may make use of functionality provided by other sub domains.
+
+To ensure long-term maintainability and evolvability these dependencies must be defined and verified.
+
+[[adr:SubDomainDependencies]]
+[source,cypher,role=concept,requiresConcepts="adr:SubDomain",reportType="plantuml-component-diagram"]
+.Existing dependencies between sub domains.
+----
+MATCH
+  (businessDomain1:SubDomain)-[:CONTAINS*]->(type1),
+  (businessDomain2:SubDomain)-[:CONTAINS*]->(type2),
+  (type1)-[dependsOn:DEPENDS_ON]->(type2)
+WHERE
+  businessDomain1 <> businessDomain2
+WITH
+  businessDomain1, businessDomain2, count(dependsOn) as weight
+MERGE
+  (businessDomain1)-[dependsOn:DEPENDS_ON{weight:weight}]->(businessDomain2)
+RETURN
+  businessDomain1, dependsOn, businessDomain2
+----
+
+== Decision
+
+The following dependencies between sub domains are defined:
+
+[[adr:DefinedSubDomainDependencies]]
+[plantuml,DefinedSubDomainDependencies,role=concept,requiresConcepts="adr:SubDomain"]
+.Defined dependencies between sub domains.
+----
+@startuml
+
+[{name:"owner"}] as owner <<SubDomain>>
+[{name:"visit"}] as visit <<SubDomain>>
+[{name:"vet"}]   as vet   <<SubDomain>>
+
+owner --> vet   : (+):DEFINES_DEPENDENCY
+visit --> owner : (+):DEFINES_DEPENDENCY
+visit --> vet   : (+):DEFINES_DEPENDENCY
+
+@enduml
+----
+
+== Consequences
+
+* It must be verified if there are any undefined dependencies in the implementation.
+
+[[adr:UndefinedSubDomainDependencies]]
+[source,cypher,role=constraint,requiresConcepts="adr:SubDomainDependencies,adr:DefinedSubDomainDependencies"]
+.Undefined dependencies between sub domains.
+----
+MATCH
+  (subDomain1:SubDomain)-[:DEPENDS_ON]->(subDomain2:SubDomain)
+WHERE NOT
+  (subDomain1)-[:DEFINES_DEPENDENCY]->(subDomain2)
+WITH
+  subDomain1, subDomain2
+MATCH
+  // drill-down to types which create the undefined dependencies
+  (subDomain1)-[:CONTAINS*]->(type1:Type),
+  (subDomain2)-[:CONTAINS*]->(type2:Type),
+  (type1)-[:DEPENDS_ON]->(type2)
+RETURN
+  subDomain1.name AS `Sub Domain`,
+  type1.name AS `Type`,
+  subDomain2.name AS `Sub Domain Dependency`,
+  collect(type2.name) AS `Dependency Types`
+----
+
+* For every undefined dependency it must be evaluated if...
+** the undefined dependency can be resolved, e.g. removed or reverted
+** the definition of defined dependencies between sub domains must be updated
+

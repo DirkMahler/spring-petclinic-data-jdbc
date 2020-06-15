@@ -31,7 +31,9 @@
         <wavefront.version>2.0.0-RC1</wavefront.version>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
 
-        <jqassistant.version>1.8.0</jqassistant.version>
+        <jqassistant.version>1.9.0-ALPHA1</jqassistant.version>
+        <jqassistant.plugin.dashboard.version>1.8.0</jqassistant.plugin.dashboard.version>
+        <jqassistant.plugin.plantuml-rule.version>1.8.0</jqassistant.plugin.plantuml-rule.version>
     </properties>
 
     <dependencies>
@@ -273,12 +275,9 @@
                         </goals>
                         <configuration>
                             <groups>
-                                <!--
                                 <group>default</group>
-                                -->
                                 <group>jqassistant-dashboard:Default</group>
                             </groups>
-
                             <scanIncludes>
                                 <scanInclude>
                                     <path>${project.basedir}/.git</path>
@@ -296,8 +295,13 @@
                 <dependencies>
                     <dependency>
                         <groupId>org.jqassistant.contrib.plugin</groupId>
+                        <artifactId>jqassistant-plantuml-rule-plugin</artifactId>
+                        <version>${jqassistant.plugin.plantuml-rule.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jqassistant.contrib.plugin</groupId>
                         <artifactId>jqassistant-dashboard-plugin</artifactId>
-                        <version>1.8.0</version>
+                        <version>${jqassistant.plugin.dashboard.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

@@ -1,0 +1,43 @@
+= Use Sub Domains As Top Level Packages
+
+== Status: Accepted
+
+== Context
+
+The application structure shall support long-term maintainability.
+Therefore the need for navigating within or between package structures shall be kept as minimal as possible for development.
+Java classes which are often changed together should be located within the same package or package hierarchy.
+
+This is usually achieved by a package structure which is organized by business-driven sub domains providing:
+
+* High cohesion within a package and its sub-packages
+* Low coupling between packages that are siblings
+
+== Decision
+
+Packages directly located within the application root package `org.springframework.samples.petclinic` represent sub domains.
+
+The only exception is the `system` package providing technical infrastructure shared across the sub domains.
+
+[[adr:SubDomain]]
+[source,cypher,role=concept]
+.Sub Domains
+----
+MATCH
+  (:Main:Artifact)-[:CONTAINS]->(root:Package)-[:CONTAINS]->(subDomain:Package)
+WHERE
+  root.fqn = 'org.springframework.samples.petclinic'
+  AND subDomain.name <> 'system'
+SET
+  subDomain:SubDomain
+RETURN
+  subDomain.name AS `Sub Domain`, subDomain.fqn AS Package
+ORDER BY
+  Package
+----
+
+== Consequences
+
+* All Java classes except the Spring Boot Application class must be located within a sub domain package.
+
+

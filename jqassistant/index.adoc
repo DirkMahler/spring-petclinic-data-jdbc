@@ -1,0 +1,18 @@
+:toc: left
+:toclevels: 3
+= Spring Data JDBC - PetClinic
+
+[[default]]
+[role=group,includesConcepts="adr:*",includesConstraints="adr:*"]
+== Architecture Decision Records
+
+=== Sub Domains
+:leveloffset: +3
+include::subdomains/001-UseSubDomainsAsTopLevelPackages.adoc[]
+include::subdomains/002-ManageDependenciesBetweenSubDomains.adoc[]
+:leveloffset: -3
+
+== jQAssistant Summary
+
+include::jQA:Summary[concepts="adr:*",constraints="adr:*"]
+
