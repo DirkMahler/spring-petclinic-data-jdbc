@@ -13,17 +13,17 @@ To ensure long-term maintainability and evolvability these dependencies must be 
 .Existing dependencies between sub domains.
 ----
 MATCH
-  (businessDomain1:SubDomain)-[:CONTAINS*]->(type1),
-  (businessDomain2:SubDomain)-[:CONTAINS*]->(type2),
+  (subDomain1:SubDomain)-[:CONTAINS*]->(type1),
+  (subDomain2:SubDomain)-[:CONTAINS*]->(type2),
   (type1)-[dependsOn:DEPENDS_ON]->(type2)
 WHERE
-  businessDomain1 <> businessDomain2
+  subDomain1 <> subDomain2
 WITH
-  businessDomain1, businessDomain2, count(dependsOn) as weight
+  subDomain1, subDomain2, count(dependsOn) AS weight
 MERGE
-  (businessDomain1)-[dependsOn:DEPENDS_ON{weight:weight}]->(businessDomain2)
+  (subDomain1)-[dependsOn:DEPENDS_ON{weight:weight}]->(subDomain2)
 RETURN
-  businessDomain1, dependsOn, businessDomain2
+  subDomain1, dependsOn, subDomain2
 ----
 
 == Decision

@@ -31,7 +31,7 @@
         <wavefront.version>2.0.0-RC1</wavefront.version>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
 
-        <jqassistant.version>1.9.0-ALPHA1</jqassistant.version>
+        <jqassistant.version>1.9.0-ALPHA2</jqassistant.version>
         <jqassistant.plugin.dashboard.version>1.8.0</jqassistant.plugin.dashboard.version>
         <jqassistant.plugin.plantuml-rule.version>1.8.0</jqassistant.plugin.plantuml-rule.version>
     </properties>

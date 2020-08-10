@@ -1,0 +1,24 @@
+version: '3'
+services:
+  neo4j:
+    image: neo4j:3.5.20
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      - NEO4J_AUTH=neo4j/jqassistant
+    networks:
+      - jqassistant
+    volumes:
+      - ./target/jqassistant/store:/data/databases/graph.db
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    ports:
+      - 8888:8888
+    networks:
+      - jqassistant
+    volumes:
+      - ./jqassistant/jupyter:/home/jovyan/work
+networks:
+  jqassistant:
+    driver: bridge
